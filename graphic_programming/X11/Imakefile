@@ -1,0 +1,2 @@
+LDLIBS = $(XLIB)
+SimpleProgramTarget(xsimple)

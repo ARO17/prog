@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+  <head>
+    <title>JS1k, 1k demo submission (pending)</title>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script>
+	
+	o=" . *";
+	n=0;
+	document.write('<pre id="a"></pre>');
+	f=Math.sin;
+	c=Math.atan2;
+	setInterval(
+		function(){
+			h=32*f(n/40)+32;
+			j=16*f(n/43)+16;
+			k=32*f(n/27)+32;
+			l=16*f(n/29)+16;
+			g="";
+			for(y=0;y<32;y++){
+				for(x=0;x<64;x++)
+					g+=(o[Math.round((c(x-h,y-j)+c(x-k,y-l))/3.14*8+16)%4]);
+				g+="\n";
+			}n++;
+			document.getElementById("a").textContent=g;	
+		}
+		,10);
+	
+	</script>
+  </body>
+</html>
