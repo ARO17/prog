@@ -183,6 +183,8 @@ void Dessiner()
 
   glRotated(angleX,1,0,0);
 
+  dessinerRepere(200);
+
   glBegin(GL_TRIANGLE_FAN);
 
   glColor3ub(255,0,0); //face rouge
@@ -226,7 +228,6 @@ void dessinerRepere(unsigned int echelle = 1)
   glVertex3i(0, 1, 0);
 
   // axe des z
-  // axe des y
   glColor3ub(0, 0, 255);
   glVertex3i(0, 0, 0);
   glVertex3i(0, 0, 1);
