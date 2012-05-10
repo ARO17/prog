@@ -139,6 +139,35 @@ void Dessiner()
 
   dessinerRepere(200);
 
+  glBegin(GL_TRIANGLES);
+
+  glColor3ub(255, 0, 0); //face rouge
+  glVertex3d(1, 0, 0);
+  glVertex3d(0, 1, 0);
+  glVertex3d(-1, -1, 0);
+
+  glColor3ub(0, 255, 0); //face rouge
+  glVertex3d(0, 0, 1);
+  glVertex3d(1, 0, 0);
+  glVertex3d(0, 1, 0);
+
+  glColor3ub(0, 0, 255); //face rouge
+  glVertex3d(0, 0, 1);
+  glVertex3d(0, 1, 0);
+  glVertex3d(-1, -1, 0);
+
+  glColor3ub(0, 0, 255); //face rouge
+  glVertex3d(0, 0, 1);
+  glVertex3d(0, 1, 0);
+  glVertex3d(-1, -1, 0);
+
+  glColor3ub(0, 255, 255); //face rouge
+  glVertex3d(0, 0, 1);
+  glVertex3d(-1, -1, 0);
+  glVertex3d(1, 0, 0);
+
+  glEnd();
+  
   glBegin(GL_QUADS);
 
   glColor3ub(255,0,0); //face rouge
