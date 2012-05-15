@@ -75,9 +75,11 @@ int main()
 
   Uint32 last_time = SDL_GetTicks();
   Uint32 current_time,ellapsed_time;
+  Uint32 start_time;
 
   for (;;)
     {
+      start_time = SDL_GetTicks();
       while (SDL_PollEvent(&event))
         {
 	  switch(event.type)
@@ -117,6 +119,12 @@ int main()
       cout << "ellapsed time : " << ellapsed_time << endl;
       
       Dessiner();
+
+      ellapsed_time = SDL_GetTicks() - start_time;
+      if (ellapsed_time < 10)
+        {
+	  SDL_Delay(10 - ellapsed_time);
+        }
 
     }
 

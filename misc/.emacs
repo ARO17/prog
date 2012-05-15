@@ -1,58 +1,153 @@
-;;disable splash screen and startup message
-(setq inhibit-startup-message t)
-(setq initial-scratch-message nil)
-
-;;enable syntax highlight by default
-(global-font-lock-mode t)
-(setq font-lock-maximum-decoration t)
-
-;;;Uncomment the following line if there is a problem in your .emacs
-;;;and then run emacs. The debugger will pop-up at the line with the
-;;;error.  
-;(setq debug-on-error t)
-
-;(setq scroll-step 1)			   ; scroll 1 line at a time
-
-;;;Emacs 21 only-- disable fancy stuff
-(tool-bar-mode 0)			       ; disable toolbar
-;;(menu-bar-mode -1)			       ; disable menu-bar
-;;(scroll-bar-mode -1)                         ;disable scroll-bar
-
-;; les BEEP sont remplaces par un effet visuel
+;; Fichier de configuration d'Emacs (Editeur de texte)
+;; Le fichier doit s'appeler ~/.emacs ou ~/.emacs.el
+;; ENSIMAG 2008.
+ 
+;; Auteur : Matthieu Moy <Matthieu.Moy@imag.fr>
+ 
+;; Ceci est le fichier de configuration d'Emacs. Il est écrit dans un
+;; langage appelé Emacs-lisp, mais rassurez-vous, vous n'avez pas
+;; besoin de le connaitre pour changer votre configuration.
+;;
+;; Tout ce qui est précédé par un point-virgule est un commentaire.
+ 
+;; Correspondance des parenthèses :
+;; Avec ceci, positionnez le curseur sur une parenthèse ouvrante ou
+;; une parenthèse fermante, Emacs met en couleur la paire de
+;; parenthèses.
+(show-paren-mode t)
+ 
+;; Utiliser UTF-8 comme codage de caractères par défaut.
+;; Pour les détails, cf. http://www-verimag.imag.fr/~moy/emacs/#accents
+;(set-language-environment 'utf-8)
+;(set-terminal-coding-system 'utf-8)
+;(set-keyboard-coding-system 'utf-8)
+ 
+;; Afficher les numéros de lignes dans la mode-line (barre du bas de
+;; fenêtre) :
+(line-number-mode t)
+(column-number-mode t)
+ 
+;; Faire clignoter l'écran au lieu de faire « beep ». Sympa en salle
+;; TX !
 (setq visible-bell t)
+ 
+;; Pour les curieux ...
+ 
+;; La suite de ce fichier ne contient que des commentaires !
+;; Ce sont des suggestions pour vous constituer votre
+;; .emacs.el. Décommentez les lignes de configuration pour les
+;; activer.
+ 
+;; Ne pas afficher le message d'accueil
+(setq inhibit-startup-message t)
 
-;; Affiche numero de ligne et colonne dans la barre d'info
-(setq column-number-mode t)
-(setq line-number-mode t)
+;; Switcher entre le buffer courant et le buffer précédemment utilisé
+(global-set-key [C-tab] (lambda ()
+			   (interactive)
+			   (switch-to-buffer (other-buffer))))
 
-;; affiche le nom du buffer dans la description de la fenetre
-(setq frame-title-format '(buffer-file-name "Emacs: %b (%f)" "Emacs: %b"))
+;;nom du buffer en cours dans la barre de titre
+;(setq frame-title-format "%b - Emacs")
+;(setq icon-title-format "%b - Emacs")
+ 
+;; Des raccourcis claviers et une selection comme sous Windows
+;; (C-c/C-x/C-v pour copier coller, ...)
+;(cua-mode 1)
+ 
+;; Correction orthographique :
+;(ispell-change-dictionary "francais")
+;; Souligner les mots incorrects en mode LaTeX
+;(add-hook 'latex-mode-hook 'flyspell-mode)
+ 
+;; Se limiter à des lignes de 80 caractères dans les modes textes (y
+;; compris le mode LaTeX) :
+;; cf. http://www-verimag.imag.fr/~moy/emacs/#autofill
+;(add-hook 'text-mode-hook 'turn-on-auto-fill)
+ 
+;; Changer le comportement de la selection de fichiers (C-x C-f)
+;(ido-mode 1)
+ 
+;; Dans la même série : changer le comportement de la complétion.
+;(icomplete-mode)
+ 
+;; Pour une interface graphique un peu dépouillée
+;(menu-bar-mode -1)
+;(scroll-bar-mode -1)
+(tool-bar-mode -1)
+;(blink-cursor-mode -1)
+ 
+;; Définir des touches pour se déplacer rapidement :
+;; Aller à la parenthèse ouvrante correspondante :
+;(global-set-key [M-right] 'forward-sexp) 
+;; Aller à la parenthèse Fermante correspondante :
+;(global-set-key [M-left] 'backward-sexp) 
+ 
+;; Pour utiliser emacsclient (man emacsclient)
+;(server-start)
+ 
+;; Compiler avec M-f9, recompiler (avec la même commande de
+;; compilation) avec f9.
+;(global-set-key [M-f9]   'compile)
+;(global-set-key [f9]     'recompile)
+ 
+;; Se souvenir des derniers fichiers ouverts
+;(setq recentf-menu-path nil)
+;(setq recentf-menu-title "Recentf")
+;(recentf-mode 1)
 
-;; parenthese matching
-(show-paren-mode 1)
-(setq-default hilight-paren-expression t)
-
-;; affichage de l heure dans la barre d'info (format 24h)
-(display-time)
-(setq display-time-24hr-format t)
-
-;; petite fenetre de compil, pas tout l'ecran, merci
-(setq compilation-window-height 10)
-
-;; cacher le buffer de compilation s'il n'y a pas d'erreur
-;(defun notify-compilation-result(buffer msg)
-;"Notify that the compilation is finished,
-;close the *compilation* buffer if the compilation is successful,
-;and set the focus back to Emacs frame"
-;(if (string-match "^finished" msg)
-;(progn
-;(delete-windows-on buffer)
-;;(tooltip-show "\n Compilation Successful :-) \n "))
-;)
-;;(tooltip-show "\n Compilation Failed :-( \n "))
-;)
-;(setq current-frame (car (car (cdr (current-frame-configuration)))))
-;(select-frame-set-input-focus current-frame)
-;)
-;(add-to-list 'compilation-finish-functions
-;'notify-compilation-result)
+(require 'etags) ;; provides `find-tag-default' in Emacs 21.
+  
+  (defun isearch-yank-regexp (regexp)
+    "Pull REGEXP into search regexp." 
+    (let ((isearch-regexp nil)) ;; Dynamic binding of global.
+      (isearch-yank-string regexp))
+    (isearch-search-and-update))
+  
+  (defun isearch-yank-symbol (&optional partialp)
+    "Put symbol at current point into search string.
+  
+  If PARTIALP is non-nil, find all partial matches."
+    (interactive "P")
+    (let* ((sym (find-tag-default))
+	   ;; Use call of `re-search-forward' by `find-tag-default' to
+	   ;; retrieve the end point of the symbol.
+	   (sym-end (match-end 0))
+	   (sym-start (- sym-end (length sym))))
+      (if (null sym)
+	  (message "No symbol at point")
+	(goto-char sym-start)
+	;; For consistent behavior, restart Isearch from starting point
+	;; (or end point if using `isearch-backward') of symbol.
+	(isearch-search)
+	(if partialp
+	    (isearch-yank-string sym)
+	  (isearch-yank-regexp
+	   (concat "\\_<" (regexp-quote sym) "\\_>"))))))
+  
+  (defun isearch-current-symbol (&optional partialp)
+    "Incremental search forward with symbol under point.
+  
+  Prefixed with \\[universal-argument] will find all partial
+  matches."
+    (interactive "P")
+    (let ((start (point)))
+      (isearch-forward-regexp nil 1)
+      (isearch-yank-symbol partialp)))
+  
+  (defun isearch-backward-current-symbol (&optional partialp)
+    "Incremental search backward with symbol under point.
+  
+  Prefixed with \\[universal-argument] will find all partial
+  matches."
+    (interactive "P")
+    (let ((start (point)))
+      (isearch-backward-regexp nil 1)
+      (isearch-yank-symbol partialp)))
+  
+  (global-set-key [f3] 'isearch-current-symbol)
+  (global-set-key [(control f3)] 'isearch-backward-current-symbol)
+  
+  ;; Subsequent hitting of the keys will increment to the next
+  ;; match--duplicating `C-s' and `C-r', respectively.
+  (define-key isearch-mode-map [f3] 'isearch-repeat-forward)
+  (define-key isearch-mode-map [(control f3)] 'isearch-repeat-backward)

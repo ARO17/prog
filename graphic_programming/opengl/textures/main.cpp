@@ -20,17 +20,20 @@ using namespace std;
 
 void dessinerCaisse();
 void dessinerPyramide();
+void dessinerCaisseBois();
 void DrawGL();
 void dessinerRepere(unsigned int echelle);
 
-#define VITESSE_ROTATION_CAMERA 0.01
+#define VITESSE_MOUVEMENT_CAMERA 0.01
 #define VITESSE_ROTATION_PYRAMIDE 0.1
-#define VITESSE_ROTATION_CUBE 0.05
+#define VITESSE_DEPLACEMENT_CUBE 0.05
+//#define VITESSE_DEPLACEMENT_CAISSE 0.05
 
 double angle_camera = 0;
 double angle_pyramide = 0;
 double angle_cube = 180;
 double x_cube = 2;
+//double x_caisse = 2;
 double hauteur = 3;
 
 // Les identifiants de texture.
@@ -72,7 +75,7 @@ int main()
   // verification de l'activation de l'affichage
   if( !ecran )
     {
-      cerr << "Echec de creation de la fenetre en 640x480 : " << SDL_GetError() << endl;
+      cerr << "Echec de creation de la fenetre en " << LARGEUR_FENETRE << "x" << HAUTEUR_FENETRE << " : " << SDL_GetError() << endl;
       return (EXIT_FAILURE);
     }
 
@@ -91,8 +94,8 @@ int main()
       return (EXIT_FAILURE);
     }
 
-  glMatrixMode( GL_PROJECTION );
-  glLoadIdentity( );
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
   gluPerspective(70,(double)LARGEUR_FENETRE/HAUTEUR_FENETRE,1,1000);
 
   glEnable(GL_DEPTH_TEST);
@@ -134,15 +137,20 @@ int main()
       elapsed_time = current_time - last_time;
       last_time = current_time;
 
-      angle_camera += VITESSE_ROTATION_CAMERA*elapsed_time;
-      hauteur = 2+2*cos(2*angle_camera*M_PI/180);
+      // déplacement caméra
+      angle_camera += VITESSE_MOUVEMENT_CAMERA * elapsed_time;
+      hauteur = 2 + 2 * cos(2 * angle_camera * M_PI / 180);
 
-      angle_pyramide +=  VITESSE_ROTATION_PYRAMIDE*elapsed_time;
+      // rotation pyramide
+      angle_pyramide +=  VITESSE_ROTATION_PYRAMIDE * elapsed_time;
 
-      angle_cube += VITESSE_ROTATION_CUBE*elapsed_time;
-      x_cube = 2*cos(angle_cube*M_PI/180);
+      // deplacement cube
+      angle_cube += VITESSE_DEPLACEMENT_CUBE * elapsed_time;
+      x_cube = 2 * cos(angle_cube * M_PI / 180);
 
-      cout << "x_cube : " << x_cube << endl;
+      // deplacement caisse
+      //      angle_caisse += VITESSE_DEPLACEMENT_CAISSE * elapsed_time;
+      //      x_caisse = 2 * cos(angle_caisse * M_PI / 180);
 
       DrawGL();
 
@@ -162,7 +170,7 @@ void dessinerCaisse()
   glBindTexture(GL_TEXTURE_2D, texture1);
   glPushMatrix();
   glTranslated(x_cube,2,0);
-  glBindTexture(GL_TEXTURE_2D, texture1);
+
   //Je feinte en dessinant la même face 4 fois avec une rotation
   for (int i = 0; i < 4; i++)
     {
@@ -178,6 +186,7 @@ void dessinerCaisse()
       glEnd();
       glRotated(90,0,0,1);
     }
+
   //puis le dessus (pas besoin du dessous grâce au sol)
   glBegin(GL_QUADS);
   glTexCoord2d(0,0);
@@ -188,10 +197,9 @@ void dessinerCaisse()
   glVertex3d(-1,1,1);
   glTexCoord2d(0,1);
   glVertex3d(-1,-1,1);
-
   glEnd();
-  glPopMatrix();
 
+  glPopMatrix();
 }
 
 void dessinerPyramide()
@@ -201,6 +209,7 @@ void dessinerPyramide()
   glPushMatrix();
   glTranslated(-1,-1,0);
   glRotated(angle_pyramide,0,0,1);
+
   //Je feinte en dessinant la même face 4 fois avec une rotation
   for (int i = 0; i < 4; i++)
     {
@@ -214,6 +223,59 @@ void dessinerPyramide()
       glEnd();
       glRotated(90,0,0,1);
     }
+
+  glPopMatrix();
+}
+
+void dessinerCaisseBois()
+{
+  glBindTexture(GL_TEXTURE_2D, texture3);
+  glPushMatrix();
+
+  // Pour que la caisse en bois soit à l'opposée du cube
+  // et fasse le mouvement opposé du cube, il y a 2
+  // possibilitées
+
+  // solution 1
+  // On translate à l'opposé par rapport à y donc -2
+  // On ajoute 2 pour que la caisse ne rentre pas en collision 
+  // avec la pyramide donc -4
+  // On prend l'opposée de la valeur de x par rapport au cube
+  glTranslated(-x_cube,-4,0);
+
+  // solution 2
+  // On faire subir une rotation de 180° au repère
+  // puis on déplace le cube + 2 pour éviter la pyramide.
+  //  glRotated(180,0,0,1);
+  //  glTranslated(x_cube,4,0);
+
+  //Je feinte en dessinant la même face 4 fois avec une rotation
+  for (int i = 0; i < 4; i++)
+    {
+      glBegin(GL_QUADS);
+      glTexCoord2d(0,1);
+      glVertex3d(1,1,1);
+      glTexCoord2d(0,0);
+      glVertex3d(1,1,-1);
+      glTexCoord2d(0.33,0);
+      glVertex3d(-1,1,-1);
+      glTexCoord2d(0.33,1);
+      glVertex3d(-1,1,1);
+      glEnd();
+      glRotated(90,0,0,1);
+    }
+  //puis le dessus (pas besoin du dessous grâce au sol)
+  glBegin(GL_QUADS);
+  glTexCoord2d(0,0);
+  glVertex3d(1,-1,1);
+  glTexCoord2d(0.33,0);
+  glVertex3d(1,1,1);
+  glTexCoord2d(0.33,1);
+  glVertex3d(-1,1,1);
+  glTexCoord2d(0,1);
+  glVertex3d(-1,-1,1);
+  glEnd();
+
   glPopMatrix();
 }
 
@@ -224,7 +286,7 @@ void DrawGL()
   glMatrixMode( GL_MODELVIEW );
   glLoadIdentity( );
 
-  gluLookAt(3,4,hauteur,0,0,0,0,0,1);
+  gluLookAt(5,5,hauteur,0,0,0,0,0,1);
 
   glRotated(angle_camera,0,0,1);
 
@@ -247,9 +309,15 @@ void DrawGL()
 
   glColor3ub(255,255,255);
 
+  dessinerCaisseBois();
+
+  glColor3ub(255,255,255);
+
   dessinerCaisse();
 
-  dessinerRepere(50);
+  glColor3ub(255,255,255);
+
+  dessinerRepere(5);
 
   glColor3ub(255,255,255);
 
