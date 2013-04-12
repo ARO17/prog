@@ -1,0 +1,17 @@
+# De 3 à 10 secondes on diffuse la fragrance 1 du groupe 2
+00:00:03 -> 00:00:10 = c1, g2
+
+# De 10 à 40 secondes on diffuse la fragrance 2 du groupe 3
+00:00:10 -> 00:00:40 = G3, C2
+
+# De 1 minute à 2 minutes on diffuse la fragrance 2 du groupe 3
+00:01:00 -> 00:02:00 = groupe 3, capsule 2
+
+# De 2 minutes 10 à 2 minutes 40 secondes on diffuse la fragrance 2 du groupe 3
+02:10 -> 02:40 = capsule 2, groupe 3
+
+# De 30 à 50 secondes, on diffuse la fragrance 2 sur tous les diffuseurs
+00:00:30 -> 00:00:50 = capsule 2
+
+# De 30 à 50 secondes, on diffuse la fragrance 2 sur tous les diffuseurs
+30 -> 50 = c2
