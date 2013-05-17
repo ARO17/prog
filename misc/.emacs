@@ -151,3 +151,25 @@
   ;; match--duplicating `C-s' and `C-r', respectively.
   (define-key isearch-mode-map [f3] 'isearch-repeat-forward)
   (define-key isearch-mode-map [(control f3)] 'isearch-repeat-backward)
+
+;;-------------------------------------------------------------------------------
+;; CC mode indentation level to 4
+(setq-default c-basic-offset 4)
+
+;;-------------------------------------------------------------------------------
+;; Affiche dans la barre des titre le path du fichier ouvert dans le buffer actif
+(setq-default frame-title-format
+              '(:eval
+                (format "%s@%s: %s %s"
+                        (or (file-remote-p default-directory 'user)
+                            user-real-login-name)
+                        (or (file-remote-p default-directory 'host)
+                            system-name)
+                        (buffer-name)
+                        (cond 
+                         (buffer-file-truename
+                          (concat "(" buffer-file-truename ")"))
+                         (dired-directory
+                          (concat "{" dired-directory "}"))
+                         (t
+                          "[no file]")))))
