@@ -18,9 +18,9 @@
  
 ;; Utiliser UTF-8 comme codage de caractères par défaut.
 ;; Pour les détails, cf. http://www-verimag.imag.fr/~moy/emacs/#accents
-;(set-language-environment 'utf-8)
-;(set-terminal-coding-system 'utf-8)
-;(set-keyboard-coding-system 'utf-8)
+(set-language-environment 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
  
 ;; Afficher les numéros de lignes dans la mode-line (barre du bas de
 ;; fenêtre) :
@@ -40,35 +40,25 @@
  
 ;; Ne pas afficher le message d'accueil
 (setq inhibit-startup-message t)
+(setq make-backup-files         nil) ; Don't want any backup files
+(setq auto-save-list-file-name  nil) ; Don't want any .saves files
+(setq auto-save-default         nil) ; Don't want any auto saving 
 
 ;; Switcher entre le buffer courant et le buffer précédemment utilisé
 (global-set-key [C-tab] (lambda ()
 			   (interactive)
 			   (switch-to-buffer (other-buffer))))
 
-;;nom du buffer en cours dans la barre de titre
-;(setq frame-title-format "%b - Emacs")
-;(setq icon-title-format "%b - Emacs")
- 
-;; Des raccourcis claviers et une selection comme sous Windows
-;; (C-c/C-x/C-v pour copier coller, ...)
-;(cua-mode 1)
- 
-;; Correction orthographique :
-;(ispell-change-dictionary "francais")
-;; Souligner les mots incorrects en mode LaTeX
-;(add-hook 'latex-mode-hook 'flyspell-mode)
- 
 ;; Se limiter à des lignes de 80 caractères dans les modes textes (y
 ;; compris le mode LaTeX) :
 ;; cf. http://www-verimag.imag.fr/~moy/emacs/#autofill
-;(add-hook 'text-mode-hook 'turn-on-auto-fill)
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
  
 ;; Changer le comportement de la selection de fichiers (C-x C-f)
-;(ido-mode 1)
+(ido-mode 1)
  
 ;; Dans la même série : changer le comportement de la complétion.
-;(icomplete-mode)
+(icomplete-mode)
  
 ;; Pour une interface graphique un peu dépouillée
 ;(menu-bar-mode -1)
@@ -78,23 +68,12 @@
  
 ;; Définir des touches pour se déplacer rapidement :
 ;; Aller à la parenthèse ouvrante correspondante :
-;(global-set-key [M-right] 'forward-sexp) 
+(global-set-key [M-right] 'forward-sexp) 
 ;; Aller à la parenthèse Fermante correspondante :
-;(global-set-key [M-left] 'backward-sexp) 
+(global-set-key [M-left] 'backward-sexp) 
  
-;; Pour utiliser emacsclient (man emacsclient)
-;(server-start)
- 
-;; Compiler avec M-f9, recompiler (avec la même commande de
-;; compilation) avec f9.
-;(global-set-key [M-f9]   'compile)
-;(global-set-key [f9]     'recompile)
- 
-;; Se souvenir des derniers fichiers ouverts
-;(setq recentf-menu-path nil)
-;(setq recentf-menu-title "Recentf")
-;(recentf-mode 1)
-
+;;------------------------------------------------------------------------------
+;; Find word under cursor with 'F3' key
 (require 'etags) ;; provides `find-tag-default' in Emacs 21.
   
   (defun isearch-yank-regexp (regexp)
@@ -152,9 +131,11 @@
   (define-key isearch-mode-map [f3] 'isearch-repeat-forward)
   (define-key isearch-mode-map [(control f3)] 'isearch-repeat-backward)
 
-;;-------------------------------------------------------------------------------
+
+;;------------------------------------------------------------------------------
 ;; CC mode indentation level to 4
 (setq-default c-basic-offset 4)
+
 
 ;;-------------------------------------------------------------------------------
 ;; Affiche dans la barre des titre le path du fichier ouvert dans le buffer actif
@@ -173,3 +154,23 @@
                           (concat "{" dired-directory "}"))
                          (t
                           "[no file]")))))
+
+
+;;-------------------------------------------------------------------------------
+;; Template lors de la création d'un fichier de code
+
+;; Variables for template header
+(setq user-full-name "Harold André")
+(setq user-email-address "harold.andre@scentys.com")
+
+;; On exécute la commande auto-insert à l'ouverture d'un fichier
+(add-hook 'find-file-hooks 'auto-insert)
+;; Charge la bibliothèque autoinsert qui déclare la liste
+;; auto-insert-alist
+(load-library "autoinsert")
+;;(add-to-list 'load-path "~/.emacs.d/auto-insert-mode/")
+;;(load-library "src_file_template")
+(load-file "~/.emacs.d/auto-insert-mode/src_file_template.el")
+(setq auto-insert-alist
+      (append '(((c-mode .  "C Mode") . std-file-header))
+	      auto-insert-alist))
