@@ -10,6 +10,12 @@
 ;;
 ;; Tout ce qui est précédé par un point-virgule est un commentaire.
  
+;; Taille de la fenêtre au démarrage
+(if window-system
+    (progn
+      (set-frame-size (selected-frame) 140 50)
+      (set-frame-position (selected-frame) 50 250)))
+
 ;; Correspondance des parenthèses :
 ;; Avec ceci, positionnez le curseur sur une parenthèse ouvrante ou
 ;; une parenthèse fermante, Emacs met en couleur la paire de
@@ -55,7 +61,7 @@
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
  
 ;; Changer le comportement de la selection de fichiers (C-x C-f)
-(ido-mode 1)
+;(ido-mode 1)
  
 ;; Dans la même série : changer le comportement de la complétion.
 (icomplete-mode)

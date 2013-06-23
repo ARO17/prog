@@ -1,0 +1,9 @@
+Dans le prog 4.01 :
+
+     - Pk le prog quitte quand on fait ctrl-d dans le shell... 
+       C'est un EOF, ça devrait avoir le même comportement qu'en
+       faisant un '\n'... ?
+
+Dans le prog 4.02 :
+     - Il y a un bug dans atof, On peut mettre n'importe quoi à
+       la place du '.' pour la virgule...
