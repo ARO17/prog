@@ -30,19 +30,24 @@ int main()
     while ((type = getop(s)) != EOF) {
 	switch (type) {
 	case NUMBER:
+	    printf("push NUMBER on stack\n");
 	    push(atof(s));
 	    break;
 	case '+':
+	    printf("push add result on stack\n");
 	    push(pop() + pop());
 	    break;
 	case '*':
+	    printf("push * result on stack\n");
 	    push(pop() * pop());
 	    break;
 	case '-':
+	    printf("push neg result on stack\n");
 	    op2 = pop();
 	    push(pop() - op2);
 	    break;
 	case '/':
+	    printf("push / result on stack\n");
 	    op2 = pop();
 	    if (op2 != 0.0)
 		push(pop() / op2);
@@ -68,6 +73,8 @@ double val[MAXVAL]; /* value stack */
 /* push: push f onto value stack */
 void push(double f)
 {
+    printf("push: sp = %d\n", sp);
+
     if (sp < MAXVAL)
 	val[sp++] = f;
     else
@@ -77,6 +84,8 @@ void push(double f)
 /* pop: pop and return pop value from stack */
 double pop(void)
 {
+    printf("pop: sp = %d\n", sp);
+
     if (sp > 0)
 	return val[--sp];
     else {
@@ -98,7 +107,7 @@ int getop(char s[])
     while ((s[0] = c = getch()) == ' ' || c == '\t')
 	;
     s[1] = '\0';
-    if (!isdigit(c) && c != '-')
+    if (!isdigit(c) && c != '.')
 	return c;       /* not a number */
     i = 0;
     if (isdigit(c))     /* collect integer part */
