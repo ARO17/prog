@@ -10,6 +10,14 @@
 ;;
 ;; Tout ce qui est précédé par un point-virgule est un commentaire.
  
+;; Taille de la fenêtre au démarrage
+;; Plutôt utiliser le fichier ~/.Xdefaults car la taille de la fenêtre
+;; est associé plus à la machine sur laquelle on est qu'à emacs.
+;(if window-system
+;    (progn
+;      (set-frame-size (selected-frame) 140 50)
+;      (set-frame-position (selected-frame) 50 250)))
+
 ;; Correspondance des parenthèses :
 ;; Avec ceci, positionnez le curseur sur une parenthèse ouvrante ou
 ;; une parenthèse fermante, Emacs met en couleur la paire de
@@ -55,7 +63,7 @@
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
  
 ;; Changer le comportement de la selection de fichiers (C-x C-f)
-(ido-mode 1)
+;(ido-mode 1)
  
 ;; Dans la même série : changer le comportement de la complétion.
 (icomplete-mode)
@@ -168,6 +176,7 @@
 ;; Charge la bibliothèque autoinsert qui déclare la liste
 ;; auto-insert-alist
 (load-library "autoinsert")
+(setq auto-insert-query nil)
 ;;(add-to-list 'load-path "~/.emacs.d/auto-insert-mode/")
 ;;(load-library "src_file_template")
 (load-file "~/.emacs.d/auto-insert-mode/src_file_template.el")
