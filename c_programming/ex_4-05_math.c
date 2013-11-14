@@ -8,7 +8,7 @@
  * E-mail     <harold.andre@scentys.com>
  * 
  * Started on  Fri Aug  2 12:24:20 2013 Harold André
- * Last update Fri Aug  2 13:46:48 2013 Harold André
+ * Last update Thu Oct 24 13:55:32 2013 Harold André
  *
  * gcc -Wall -o ex_4-05_math ex_4-05_math.c -lm
  * 
@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h> /* for atof() - in K&R, math.h is referenced - this is an anachronism */
 #include <math.h> /* for sin(), exp(), pow() */
+#include <string.h> /* for strcmp() */
 
 #define MAXOP 100 /* max size of operand or operator */
 #define NUMBER '0' /* signal that a number was found */
@@ -32,6 +33,7 @@ void print(void);
 void dup(void);
 void swap(void);
 void clear(void);
+void dealWithName(char []);
 
 /* reverse Polish calculator */
 
@@ -54,7 +56,8 @@ int main(void)
 		case IDENTIFIER:
 #ifdef DEBUG
 		    printf("Operator IDENTIFIER receive\n");
-#endif	  
+#endif
+		    dealWithName(s);
 		    break;
 		case '+':
 #ifdef DEBUG
@@ -190,6 +193,24 @@ void clear(void)
     sp = 0;
 }
 
+/* deal with a string/name this may be either a maths function
+   or for future exercices: a variable */
+void dealWithName(char s[])
+{
+    double op2;
+
+    if (0 == strcmp(s, "sin"))
+	push(sin(pop()));
+    else if (0 == strcmp(s, "exp"))
+	push(exp(pop()));
+    else if (0 == strcmp(s, "pow")) {
+	op2 = pop();
+	push(pow(pop(), op2));
+    }
+    else
+	printf("%s is not a supported function.\n", s);
+}
+
 #include <ctype.h>
 
 int getch(void);
@@ -206,7 +227,17 @@ int getop(char s[])
 
     s[1] = '\0'; /* useless ??? why this line, avoid security whole ? */
 
-    if(!isdigit(c) && c != '.' && c != '-')
+    if (isalpha(c)) {
+	i = 0;
+	while (isalpha(s[i++] = c))
+	    c = getch();
+	s[i - 1] = '\0';
+	if (c != EOF)
+	    ungetch(c);
+	return IDENTIFIER;
+    }
+
+    if (!isdigit(c) && c != '.' && c != '-')
 	return c; /* not a number */
 
     i = 0;

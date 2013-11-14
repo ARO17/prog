@@ -7,3 +7,12 @@ Dans le prog 4.01 :
 Dans le prog 4.02 :
      - Il y a un bug dans atof, On peut mettre n'importe quoi à
        la place du '.' pour la virgule...
+
+Dans le prog signed_char_conversion.c :
+     - Bien comprendre les problématiques de conversion.
+
+Dans le prog 4.07 :
+     - Pk les caractères ne sont remis sur le terminal que lorsqu'on
+     fait un '\n' et pas à chaque caractère tapé ?
+     - Etudier la fonction "getchar()"
+
