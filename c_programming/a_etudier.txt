@@ -16,3 +16,8 @@ Dans le prog 4.07 :
      fait un '\n' et pas à chaque caractère tapé ?
      - Etudier la fonction "getchar()"
 
+Dans le prog 5.07 :
+     - Dans la fonction readlines, dans le else, pk on utilise strcpy
+     pour copier line dans p et on copie ensuite p dans lineptr
+     au lieu de coller directement line dans lineptr ???
+

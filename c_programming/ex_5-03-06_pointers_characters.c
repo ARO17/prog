@@ -24,7 +24,7 @@
  * E-mail     <harold.andre@gmx.fr>
  * 
  * Started on  Sun Oct 27 00:14:44 2013 Harold André
- * Last update Tue Nov 12 14:18:58 2013 Harold André
+ * Last update Sat Nov 16 16:12:25 2013 Harold André
  *
  * gcc -Wall -o ex_5-03-06_pointers_characters ex_5-03-06_pointers_characters.c
  *
@@ -42,6 +42,7 @@ int strend(char *, char *);
 void my_strncpy(char *, char *, int);
 int my_getline(char line[], int max);
 int strindex(char source[], char searchfor[]);
+void reverse(char s[]);
 
 char pattern[] = "ould"; /* pattern to search for */
 
@@ -59,7 +60,7 @@ int main(void)
 
     char line[SIZE];
     int found = 0;
-
+    /*
     my_strcat(array_dest, array_src);
     printf("Concatened string: %s\n", array_dest);
 
@@ -78,6 +79,10 @@ int main(void)
 	    found++;
 	}
     printf("Number of found patterns: %d\n", found);
+    */
+    printf("Reverse \"%s\": ", array_src);
+    reverse(array_src);
+    printf("\"%s\"\n", array_src);
 
     return 0;
 }
@@ -123,7 +128,9 @@ void my_strncpy(char *dest, char *src, int n)
     }
 }
 
-/* my_getline: get line into s, return length */
+/* my_getline: get line into s, return length 
+   Warning !! The length include the newline
+   For exemple: [ line\n\0 ] length is 5 */
 int my_getline(char *s, int lim)
 {
     int c;
@@ -135,7 +142,7 @@ int my_getline(char *s, int lim)
 	*s++ = c;
     *s = '\0';
     printf("my_getline - length of s: %ld\n", (s - bs - 1));
-    return (s - bs - 1);
+    return (s - bs);
 }
 
 /* strindex: return index of t in s, -1 if none */
@@ -164,4 +171,30 @@ int strindex(char *s, char *t)
 	}
     }
     return -1;
+}
+
+/* reverse: reverse the string s on itself */
+void reverse(char *s)
+{
+    /*
+    int c, i, j;
+
+    for (i = 0, j = strlen(s)-1; i < j; i++, j--) {
+        c = s[i];
+        s[i] = s[j];
+        s[j] = c;
+    }
+    */
+    char *bs = s, temp[20] ;
+
+    while (*s++)
+	;
+    s-=2;
+    while (bs < s) {
+	*temp = *bs;
+	*bs = *s;
+	*s = *temp;
+	bs++;
+	s--;
+    }
 }
