@@ -21,3 +21,10 @@ Dans le prog 5.07 :
      pour copier line dans p et on copie ensuite p dans lineptr
      au lieu de coller directement line dans lineptr ???
 
+Dans le prog 5.09 :
+     - Dans day_of_year, comprendre la différence entre day1 et
+     day. Et comprendre en général le déplacement avec les pointeurs
+     dans un tableau à 2 dimensions...
+     Voir aussi dans le prog 5.10 au début du main, la gestion des
+     arguments.
+

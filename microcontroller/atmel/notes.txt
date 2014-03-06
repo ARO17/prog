@@ -1,0 +1,26 @@
+
+- Compiler un code pour l'ATtiny2313 :
+  avr-gcc -Os -g -Wall -mmcu=attiny2313 -o ledblink.elf ledblink.c
+
+- Créer le fichier hex qui sera injecté dans le microcontrôleur :
+  avr-objcopy -j .text -j .data -O ihex ledblink.elf ledblink.hex
+
+- Programmer le microcontrôleur :
+  avrdude -p t2313 -c stk500v2 -P /dev/ttyACM0 -B3 -i 8 -U
+  flash:w:ledblink.hex
+
+---------
+
+- Erreurs pour programmer le microcontrôleur, il ne se programe
+  correctement qu'une fois sur 5... :
+  Il faut régler "l'horloge du programmateur" serial clock (SCK),
+  l'option -B permet de faire cela, -B3 signifie sck period 3µs.
+  
+---------
+
+- Pour connecter le programmateur, il faut d'abord brancher le
+  programmateur uniquement en USB (pour que le programmateur soit bien
+  reconnu en tant que /dev/ttyACM0) puis ensuite on branche le
+  programmateur au microcontrôleur.
+  programmateur switch 1 et 2 sur ON.
+
