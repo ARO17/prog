@@ -15,33 +15,37 @@ volatile unsigned int _uCptD,_uCptG;
 
 // globals defines
 #define START 0x01
-#define FALLING_EDGE1 0x02
-#define FALLING_EDGE2 0x03
+#define FALLING_EDGE1 0x02 /* Front descendant 1 */
+#define FALLING_EDGE2 0x03 /* Front descendant 2 */
 
-#define CAPTR 0x10
-#define CAPTF 0x20
-#define CAPTL 0x40
+#define CAPTR 0x10 /* Right sensor  on PD4 */
+#define CAPTF 0x20 /* Front sensor on PD5 */
+#define CAPTL 0x40 /* Left sensor on PD6 */
 
 
 void port_init(void)
 {
-    PORTB = 0x00;
-    DDRB  = 0x1F; 
-    PORTD = 0x00;
-    DDRD  = 0x00; 
+    PORTB = 0x00; /* ? */
+    DDRB  = 0x1F; /* PB0 -> PB4 as output, PB5, PB6, PB7 as input */ 
+    PORTD = 0x00; /* ? */
+    DDRD  = 0x00; /* PD0 -> PD7 as input */
 }
 
 //TIMER1 initialisation - prescale:1024
 // desired value: 10mSec
 void timer1_init(void)
 {
-    TCCR1B = 0x00; //stop timer
-    TCNT1H = 0xFF; //set count value
-    TCNT1L = 0xB2;
-    OCR1H  = 0x1F; //set compare value
+    TCCR1B = 0x00; // stop timer
+
+    TCNT1H = 0xFF; // set count value 65458
+    TCNT1L = 0xB2; 
+
+    OCR1H  = 0x1F; // set compare value 8000
     OCR1L  = 0x40;
-    TCCR1A = 0x00;
-    TCCR1B = 0x05; //start Timer
+
+    TCCR1A = 0x00; // Timer/Counter1 disconnected from output pin OC1 (PB3)
+
+    TCCR1B = 0x05; // start Timer CS10 and CS12 bit set -> prescale 1024
 }
 
 ISR(TIMER1_OVF1_vect)
@@ -50,7 +54,7 @@ ISR(TIMER1_OVF1_vect)
     time++;
     if (time == 60){ 
 	time = 0;
-	if ((PORTB & 0x10) == 0x10)
+	if ((PORTB & 0x10) == 0x10) /* PWM ? */
 	    PORTB &= 0xEF;
 	else
 	    PORTB |= 0x10;
@@ -81,7 +85,7 @@ ISR(TIMER0_OVF0_vect)
     case START :
 	_cSD = cSpeedD; // keeping speed value until end of cycle
 	_cSG = cSpeedG;
-	PORTB |= 0x0C; // rising edge on PORTB,2&PORTB,3
+	PORTB |= 0x0C; // rising edge on PORTB,2 & PORTB,3
 	if (_cSD > _cSG)
 	    cTimer = (unsigned char)(0xFF - _cSG);
 	else
@@ -175,29 +179,29 @@ int main(void)
     time = 0;
     init_devices();
     //insert your functional code here...
-    PORTB = 0x03; 
+    PORTB = 0x03; // Run motor right  and left, PB0 and PB1
     cSpeedD = 0xD0;
     cSpeedG = 0xD0;
     while (1) {
  
-	if ((PIND&CAPTF) == 0x00) 
-	    {PORTB &= 0xFC;
-		cSpeedD = 0xD0;
-		cSpeedG = 0xD0;
-		_uCptD = 0;
-		_uCptG = 0;
+	if ((PIND&CAPTF) == 0x00) { // Nothing detected on front sensor
+	    PORTB &= 0xFC;
+	    cSpeedD = 0xD0;
+	    cSpeedG = 0xD0;
+	    _uCptD = 0;
+	    _uCptG = 0;
 
-		while ((_uCptD < 5) & (_uCptG < 5)) {}
-		PORTB |= 0x01;
-		_uCptD = 0;
-		_uCptG = 0;
-		while ((_uCptD < 21) & (_uCptG < 21)) {}
-		PORTB |= 0x03;
-	    }
+	    while ((_uCptD < 5) & (_uCptG < 5)) {}
+	    PORTB |= 0x01;
+	    _uCptD = 0;
+	    _uCptG = 0;
+	    while ((_uCptD < 21) & (_uCptG < 21)) {}
+	    PORTB |= 0x03;
+	}
 	else PORTB |= 0x03;
 
   
-	if ((PIND&CAPTR) == 0x00)
+	if ((PIND&CAPTR) == 0x00) 
 	    cSpeedG = 0x00;
 	else
 	    cSpeedG = 0xD0;

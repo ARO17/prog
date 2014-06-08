@@ -1,0 +1,30 @@
+
+- gprof :
+  Profileur pour voir le temps que passe le programme dans chaque
+  routine.
+  1) Il faut utiliser l'option -pg de gcc à la compilation.
+  2) lancer le programme pour générer le fichier gmon.out.
+  3) gprof a.out gmon.out | less
+
+- strace : 
+  Indique tous les appels-système invoqués par un processus.
+
+- nm :
+  Liste le contenu d'un fichier objet si la table des symboles du
+  fichier objet est disponible.
+
+- strip :
+  Permet de diminuer la taille d'un exécutable en supprimant la table
+  des sympboles.
+  Ne pas utiliser sur une bibliothèque partagée.
+
+- objdump :
+  Permet de récupérer de nombreuses infos d'un fichier objet. Le
+  désassemblage, le contenu des variables initialisées.
+
+
+- splint, adlint, cppcheck :
+  Recherche des erreurs sémantiques dans le code source.
+
+- indent :
+  Mets en forme le code source.
