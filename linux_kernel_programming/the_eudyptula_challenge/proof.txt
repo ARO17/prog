@@ -1,0 +1,31 @@
+$ ls -l
+total 8
+-rw-r--r-- 1 aro17 aro17 651 juin  10 16:27 hello.c
+-rw-r--r-- 1 aro17 aro17 428 juin  10 16:05 Makefile
+
+$ uname -r
+3.14-1-amd64
+
+$ make
+make -C /lib/modules/3.14-1-amd64/build M=/home/aro17/prog/linux_kernel_programming/the_eudyptula_challenge modules
+make[1]: Entering directory '/usr/src/linux-headers-3.14-1-amd64'
+Makefile:10: *** mixed implicit and normal rules: deprecated syntax
+  CC [M]  /home/aro17/prog/linux_kernel_programming/the_eudyptula_challenge/hello.o
+  Building modules, stage 2.
+  MODPOST 1 modules
+  CC      /home/aro17/prog/linux_kernel_programming/the_eudyptula_challenge/hello.mod.o
+  LD [M]  /home/aro17/prog/linux_kernel_programming/the_eudyptula_challenge/hello.ko
+make[1]: Leaving directory '/usr/src/linux-headers-3.14-1-amd64'
+
+$ sudo insmod hello.ko 
+
+$ dmesg | tail -1
+[83067.006257] Hello World!
+
+$ lsmod | grep hello
+hello                  12387  0
+
+$ sudo rmmod hello 
+
+$ dmesg | tail -1
+[83098.198178] Goodbye, world
