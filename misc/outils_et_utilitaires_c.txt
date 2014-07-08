@@ -22,7 +22,6 @@
   Permet de récupérer de nombreuses infos d'un fichier objet. Le
   désassemblage, le contenu des variables initialisées.
 
-
 - splint, adlint, cppcheck :
   Recherche des erreurs sémantiques dans le code source.
 

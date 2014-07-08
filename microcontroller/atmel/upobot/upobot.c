@@ -7,11 +7,11 @@
 
 // globals vars
 unsigned char time;
-unsigned char cSpeedD,cSpeedG;
-unsigned char _cSD,_cSG;
+unsigned char cSpeedD,cSpeedG; /* right and left motor speed */
+unsigned char _cSD,_cSG; /* motor speed copy for calculation */
 unsigned char sSenseD,cSenseG;
-unsigned char _cPwmState;
-volatile unsigned int _uCptD,_uCptG;
+unsigned char _cPwmState; /* START, FALLING_EDGE1, FALLING_EDGE2 */
+volatile unsigned int _uCptD,_uCptG; /* sensor motor (odometry) */
 
 // globals defines
 #define START 0x01
@@ -54,10 +54,11 @@ ISR(TIMER1_OVF1_vect)
     time++;
     if (time == 60){ 
 	time = 0;
-	if ((PORTB & 0x10) == 0x10) /* PWM ? */
-	    PORTB &= 0xEF;
+	/* flashing led  */
+	if ((PORTB & 0x10) == 0x10) /* If PB4 == 1 */
+	    PORTB &= 0xEF;          /* PB4 = 0 */
 	else
-	    PORTB |= 0x10;
+	    PORTB |= 0x10;          /* PB4 = 1 */
     } 
 
     TCNT1H = 0xFF; //reload counter high value
@@ -86,6 +87,7 @@ ISR(TIMER0_OVF0_vect)
 	_cSD = cSpeedD; // keeping speed value until end of cycle
 	_cSG = cSpeedG;
 	PORTB |= 0x0C; // rising edge on PORTB,2 & PORTB,3
+	// PORTB |= (1 << PB2 | 1 << PB3);
 	if (_cSD > _cSG)
 	    cTimer = (unsigned char)(0xFF - _cSG);
 	else
@@ -95,12 +97,14 @@ ISR(TIMER0_OVF0_vect)
     case FALLING_EDGE1 :
 	if (_cSD == _cSG){
 	    cTimer = _cSD;
-	    PORTB &= 0xF3;
+	    PORTB &= 0xF3; /* stop/disable both motors */
 	    _cPwmState = START;
 	} 
 	else {
 	    if (_cSD > _cSG) {
 		PORTB &= 0xFB;  //falling edge on PORTB,2
+		//PORTB &= ~(1 << PB2);
+		//PORTB &= ~(0x04);
 		cTimer = (unsigned char)(0xFF - (unsigned char)(_cSD - _cSG));
 	    }
 	    else {
@@ -111,7 +115,7 @@ ISR(TIMER0_OVF0_vect)
 	} 	 
 	break;
     case FALLING_EDGE2 :
-	PORTB &= 0xF3;
+	PORTB &= 0xF3; /* stop/disable both motors */
 	if (_cSD > _cSG)
 	    cTimer = _cSD;
 	else
@@ -161,7 +165,7 @@ void init_devices(void)
     //stop errant interrupts until set up
     cli(); //disable all interrupts
     port_init();
-    timer0_init();
+    //timer0_init();
     timer1_init();
     uart0_init();
 
@@ -179,37 +183,47 @@ int main(void)
     time = 0;
     init_devices();
     //insert your functional code here...
-    PORTB = 0x03; // Run motor right  and left, PB0 and PB1
+    PORTB = 0x03; // Run motor right and left, PB0 and PB1, forward
+    PORTB &= 0xF3; // disable motors
     cSpeedD = 0xD0;
     cSpeedG = 0xD0;
     while (1) {
- 
-	if ((PIND&CAPTF) == 0x00) { // Nothing detected on front sensor
-	    PORTB &= 0xFC;
-	    cSpeedD = 0xD0;
-	    cSpeedG = 0xD0;
-	    _uCptD = 0;
-	    _uCptG = 0;
+
+	if ((PIND & CAPTF) == 0x00) { /* obstacle detected ahead */
+	    //PORTB &= 0xFD; /* TEST moteur gauche sens antihoraire */
+	    //PORTB &= 0xFE; /* TEST moteur droit sens horaire */
+	    PORTB |= (1 << PB3);
+	    while (_uCptG < 5) {} /* TEST */
+	    //PORTB |= 0x01; /* TEST moteur droit sens horaire */
+	    PORTB &= ~(1 << PB3);
+	    
+#ifdef NOTDEF
+	    PORTB &= 0xFC;            /* reverse */
+	    cSpeedD = 0xD0;           /* set default speed to the right motor */
+	    cSpeedG = 0xD0;           /* set default speed to the left motor */
+	    _uCptD = 0;               /* reset motor's right sensor  */
+	    _uCptG = 0;               /* reset motor's left sensor  */
 
 	    while ((_uCptD < 5) & (_uCptG < 5)) {}
 	    PORTB |= 0x01;
 	    _uCptD = 0;
 	    _uCptG = 0;
 	    while ((_uCptD < 21) & (_uCptG < 21)) {}
-	    PORTB |= 0x03;
+	    PORTB |= 0x03; /* forward */
+#endif
 	}
-	else PORTB |= 0x03;
+	else PORTB |= 0x03; /* forward */
 
-  
-	if ((PIND&CAPTR) == 0x00) 
-	    cSpeedG = 0x00;
+	if ((PIND & CAPTR) == 0x00) /* obstacle on the right */
+	    cSpeedG = 0x00;         /* Stop left motor to turn left */
 	else
-	    cSpeedG = 0xD0;
+	    cSpeedG = 0xD0;         /* let the left motor at normal speed */
  
-	if ((PIND&CAPTL) == 0x00)
-	    cSpeedD = 0x00;
+	if ((PIND & CAPTL) == 0x00) /* obstacle on the left */
+	    //cSpeedD = 0x00;         /* Stop right motor to turn right */
+	    PORTB &= 0xF7;
 	else
-	    cSpeedD = 0xD0;
-  
+	    cSpeedD = 0xD0;         /* let the right motor at normal speed */
+
     }
 }
