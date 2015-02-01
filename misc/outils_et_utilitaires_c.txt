@@ -7,7 +7,11 @@
   3) gprof a.out gmon.out | less
 
 - strace : 
-  Indique tous les appels-système invoqués par un processus.
+  Indique tous les appels-système invoqués par un processus. Et les
+  signaux.
+
+- ltrace :
+  Indique les appels dynamique aux bibliotèques partagées.
 
 - nm :
   Liste le contenu d'un fichier objet si la table des symboles du
