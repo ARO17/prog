@@ -3,7 +3,7 @@
 	status = auto
 	branch = auto
 [user]
-	name = ARO17
-	email = aro17doumdoum@gmail.com
+	name = Harold André
+	email = harold.andre@gmx.com
 [core]
 	excludesfile = /home/aro17/.gitignore_global

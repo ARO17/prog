@@ -28,7 +28,7 @@
 (column-number-mode t)
  
 ;; Faire clignoter l'écran au lieu de faire « beep ». Sympa en salle
-;; TX !
+>;; TX !
 (setq visible-bell t)
  
 ;; Pour les curieux ...
@@ -161,7 +161,7 @@
 
 ;; Variables for template header
 (setq user-full-name "Harold André")
-(setq user-email-address "harold.andre@scentys.com")
+(setq user-email-address "harold.andre@gmx.fr")
 
 ;; On exécute la commande auto-insert à l'ouverture d'un fichier
 (add-hook 'find-file-hooks 'auto-insert)
@@ -178,7 +178,6 @@
 
 ;;-------------------------------------------------------------------------------
 ;; Afficher le fichier .h correspondant au .cpp et inverssement
-
 (global-set-key (kbd "<f4>") 'ff-find-other-file)
 (setq ff-always-try-to-create nil)
 
@@ -186,13 +185,18 @@
 ;;-------------------------------------------------------------------------------
 ;; Fermer automatiquement les {, (, etc...
 ;; Disponible à partir de emacs 24
-
 (electric-pair-mode 1)
+
 
 ;;-------------------------------------------------------------------------------
 ;; Faire défiler automatiquement le buffer de compilation
-
 ;(setq compilation-scroll-output t)
 
 ;; jusqu'à la première erreur
 (setq compilation-scroll-output 'first-error)
+
+
+;;-------------------------------------------------------------------------------
+;; Affiche la page du manuel correpondant au mot se trouvant sous le curseur
+;; losqu'on appuie sur la touche F1
+(global-set-key [(f1)] (lambda () (interactive) (manual-entry (current-word))))
