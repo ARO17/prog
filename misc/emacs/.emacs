@@ -169,7 +169,7 @@
 
 ;; Variables for template header
 (setq user-full-name "Harold André")
-(setq user-email-address "harold.andre@scentys.com")
+(setq user-email-address "harold.andre@gmx.fr")
 
 ;; On exécute la commande auto-insert à l'ouverture d'un fichier
 (add-hook 'find-file-hooks 'auto-insert)
@@ -183,3 +183,9 @@
 (setq auto-insert-alist
       (append '(((c-mode .  "C Mode") . std-file-header))
 	      auto-insert-alist))
+
+
+;;-------------------------------------------------------------------------------
+;; Affiche la page du manuel correpondant au mot se trouvant sous le curseur
+;; losqu'on appuie sur la touche F1
+(global-set-key [(f1)] (lambda () (interactive) (manual-entry (current-word))))
