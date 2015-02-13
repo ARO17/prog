@@ -10,14 +10,6 @@
 ;;
 ;; Tout ce qui est précédé par un point-virgule est un commentaire.
  
-;; Taille de la fenêtre au démarrage
-;; Plutôt utiliser le fichier ~/.Xdefaults car la taille de la fenêtre
-;; est associé plus à la machine sur laquelle on est qu'à emacs.
-;(if window-system
-;    (progn
-;      (set-frame-size (selected-frame) 140 50)
-;      (set-frame-position (selected-frame) 50 250)))
-
 ;; Correspondance des parenthèses :
 ;; Avec ceci, positionnez le curseur sur une parenthèse ouvrante ou
 ;; une parenthèse fermante, Emacs met en couleur la paire de
@@ -176,10 +168,31 @@
 ;; Charge la bibliothèque autoinsert qui déclare la liste
 ;; auto-insert-alist
 (load-library "autoinsert")
-(setq auto-insert-query nil)
 ;;(add-to-list 'load-path "~/.emacs.d/auto-insert-mode/")
 ;;(load-library "src_file_template")
 (load-file "~/.emacs.d/auto-insert-mode/src_file_template.el")
 (setq auto-insert-alist
       (append '(((c-mode .  "C Mode") . std-file-header))
 	      auto-insert-alist))
+
+
+;;-------------------------------------------------------------------------------
+;; Afficher le fichier .h correspondant au .cpp et inverssement
+
+(global-set-key (kbd "<f4>") 'ff-find-other-file)
+(setq ff-always-try-to-create nil)
+
+
+;;-------------------------------------------------------------------------------
+;; Fermer automatiquement les {, (, etc...
+;; Disponible à partir de emacs 24
+
+(electric-pair-mode 1)
+
+;;-------------------------------------------------------------------------------
+;; Faire défiler automatiquement le buffer de compilation
+
+;(setq compilation-scroll-output t)
+
+;; jusqu'à la première erreur
+(setq compilation-scroll-output 'first-error)
