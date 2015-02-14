@@ -11,7 +11,7 @@
 ;; Tout ce qui est précédé par un point-virgule est un commentaire.
 
 ;; Taille de la fenêtre au démarrage
-;; Plutôt utiliser le fichier ~/.Xdefaults car la taille de la fenêtre
+;; Plutôt utiliser le fichier ~/.Xresources car la taille de la fenêtre
 ;; est associé plus à la machine sur laquelle on est qu'à emacs.
 ;(if window-system
 ;    (progn
@@ -209,3 +209,16 @@
 ;; Affiche la page du manuel correpondant au mot se trouvant sous le curseur
 ;; losqu'on appuie sur la touche F1
 (global-set-key [(f1)] (lambda () (interactive) (manual-entry (current-word))))
+
+
+;;-------------------------------------------------------------------------------
+;; Thème à contraste faible
+;; https://github.com/bbatsov/zenburn-emacs
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+(load-theme 'zenburn t)
+
+
+;;-------------------------------------------------------------------------------
+;; Taille de police à 10
+;; La valeur est de 1/10pt donc 100 donne 10pt
+(set-face-attribute 'default (selected-frame) :height 100)
