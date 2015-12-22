@@ -79,7 +79,15 @@
 (global-set-key [M-right] 'forward-sexp) 
 ;; Aller à la parenthèse Fermante correspondante :
 (global-set-key [M-left] 'backward-sexp) 
- 
+
+;;------------------------------------------------------------------------------
+;; Add directory "~/.emacs.d/lisp/" to load path
+;;;TOFIX: Don't work !!!
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
+;(let ((default-directory "~/.emacs.d/lisp/"))
+;  (normal-top-level-add-to-load-path '("."))
+;  (normal-top-level-add-subdirs-to-load-path))
+
 ;;------------------------------------------------------------------------------
 ;; Find word under cursor with 'F3' key
 (require 'etags) ;; provides `find-tag-default' in Emacs 21.
@@ -179,7 +187,7 @@
 (setq auto-insert-query nil)
 ;;(add-to-list 'load-path "~/.emacs.d/auto-insert-mode/")
 ;;(load-library "src_file_template")
-(load-file "~/.emacs.d/auto-insert-mode/src_file_template.el")
+(load-file "~/.emacs.d/lisp/auto-insert-mode/src_file_template.el")
 (setq auto-insert-alist
       (append '(((c-mode .  "C Mode") . std-file-header))
 	      auto-insert-alist))
@@ -214,7 +222,7 @@
 ;;-------------------------------------------------------------------------------
 ;; Thème à contraste faible
 ;; https://github.com/bbatsov/zenburn-emacs
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+(add-to-list 'custom-theme-load-path "~/.emacs.d/lisp/themes/")
 (load-theme 'zenburn t)
 
 
@@ -222,3 +230,20 @@
 ;; Taille de police à 10
 ;; La valeur est de 1/10pt donc 100 donne 10pt
 (set-face-attribute 'default (selected-frame) :height 100)
+
+;;-------------------------------------------------------------------------------
+;; Load cscope support
+(require 'xcscope)
+
+;;-------------------------------------------------------------------------------
+;; 80 column line indicator
+(add-to-list 'load-path "~/.emacs.d/lisp/")
+(require 'fill-column-indicator)
+(setq fci-rule-column 80)
+(define-globalized-minor-mode my-global-fci-mode fci-mode turn-on-fci-mode)
+(my-global-fci-mode 1)
+(setq fci-rule-color "grey33")
+
+;;-------------------------------------------------------------------------------
+;; Load CEDET
+(load-file "~/temp/cedet/cedet-bzr/trunk/cedet-devel-load.el")
