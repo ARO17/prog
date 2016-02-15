@@ -149,8 +149,15 @@
 
 
 ;;------------------------------------------------------------------------------
-;; CC mode indentation level to 4
-(setq-default c-basic-offset 4)
+;; C/C++ mode
+(require 'cc-mode)
+
+
+;;------------------------------------------------------------------------------
+;; CC mode indentation
+(setq-default c-basic-offset 4 c-default-style "k&r")
+(setq-default tab-width 4 indent-tabs-mode t)
+(define-key c-mode-base-map (kbd "RET") 'newline-and-indent)
 
 
 ;;-------------------------------------------------------------------------------
@@ -231,9 +238,11 @@
 ;; La valeur est de 1/10pt donc 100 donne 10pt
 (set-face-attribute 'default (selected-frame) :height 100)
 
+
 ;;-------------------------------------------------------------------------------
 ;; Load cscope support
 (require 'xcscope)
+
 
 ;;-------------------------------------------------------------------------------
 ;; 80 column line indicator
@@ -244,6 +253,107 @@
 (my-global-fci-mode 1)
 (setq fci-rule-color "grey33")
 
+
 ;;-------------------------------------------------------------------------------
 ;; Load CEDET
-(load-file "~/temp/cedet/cedet-bzr/trunk/cedet-devel-load.el")
+;(load-file "~/temp/cedet/cedet-bzr/trunk/cedet-devel-load.el")
+
+
+;;-------------------------------------------------------------------------------
+;; Emacs package manager
+(require 'package)
+(dolist (source '(("marmalade" . "http://marmalade-repo.org/packages/")
+                  ("elpa" . "http://tromey.com/elpa/")
+                  ;; TODO: Maybe, use this after emacs24 is released
+                  ;; (development versions of packages)
+                  ("melpa" . "http://melpa.milkbox.net/packages/")
+                  ))
+  (add-to-list 'package-archives source t))
+(package-initialize)
+
+
+;;-------------------------------------------------------------------------------
+;; Automatically install required packages
+;; everytime emacs starts, it will automatically check if those packages are
+;; missing, it will install them automatically
+(when (not package-archive-contents)
+  (package-refresh-contents))
+(defvar tmtxt/packages
+  '(cedet xcscope fill-column-indicator ecb yasnippet auto-complete ggtags helm))
+(dolist (p tmtxt/packages)
+  (when (not (package-installed-p p))
+    (package-install p)))
+
+
+;;-------------------------------------------------------------------------------
+;; Activate ECB - Emacs Code Browser
+;(require 'ecb-autoloads)
+(require 'ecb)
+
+
+;;-------------------------------------------------------------------------------
+;; ECB configuration
+(setq ecb-layout-name "left3")
+(setq ecb-show-sources-in-directories-buffer 'always)
+(setq ecb-compile-window-height 12)
+;; activate and deactivate ecb
+(global-set-key (kbd "C-x C-;") 'ecb-activate)
+(global-set-key (kbd "C-x C-'") 'ecb-deactivate)
+;; show/hide ecb window
+(global-set-key (kbd "C-;") 'ecb-show-ecb-windows)
+(global-set-key (kbd "C-'") 'ecb-hide-ecb-windows)
+;; quick navigation between ecb windows
+(global-set-key (kbd "C-)") 'ecb-goto-window-edit1)
+(global-set-key (kbd "C-!") 'ecb-goto-window-directories)
+(global-set-key (kbd "C-@") 'ecb-goto-window-sources)
+(global-set-key (kbd "C-#") 'ecb-goto-window-methods)
+(global-set-key (kbd "C-$") 'ecb-goto-window-compilation)
+
+
+;;-------------------------------------------------------------------------------
+;; yasnippet
+;; should be loaded before auto complete so that they can work together
+;(add-to-list 'load-path
+;			 "~/path-to-yasnippet")
+(require 'yasnippet)
+(yas-global-mode 1)
+
+
+;;-------------------------------------------------------------------------------
+;; auto complete mod
+;; should be loaded after yasnippet so that they can work together
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+(ac-config-default)
+;; set the trigger key so that it can work together with yasnippet on tab key,
+;; if the word exists in yasnippet, pressing tab will cause yasnippet to
+;; activate, otherwise, auto-complete will
+(ac-set-trigger-key "TAB")
+(ac-set-trigger-key "<tab>")
+
+
+;;-------------------------------------------------------------------------------
+(require 'auto-complete-clang)
+(define-key c++-mode-map (kbd "C-S-<return>") 'ac-complete-clang)
+;; replace C-S-<return> with a key binding that you want
+
+
+;;-------------------------------------------------------------------------------
+;; Syntax Checking on the fly
+;; TODO: To test
+;;(require 'flymake)
+
+
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ecb-options-version "2.40"))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
